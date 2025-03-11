@@ -1,7 +1,44 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:walking/model/walking_player.dart';
+
+@pragma('vm:entry-point')
+void foregroundCallback() {
+  FlutterForegroundTask.setTaskHandler(WalkingTaskHandler());
+}
+
+class WalkingTaskHandler extends TaskHandler {
+  @override
+  Future<void> onDestroy(DateTime timestamp) async {
+    print("onDestroy");
+  }
+
+  @override
+  void onRepeatEvent(DateTime timestamp) {
+    print("onRepeatEvent");
+  }
+
+  @override
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
+    final audioHandler = await AudioService.init<WalkingPlayer>(
+      builder: () => WalkingPlayer(),
+    );
+    detectWalking(
+      onWalking: () {
+        audioHandler.play();
+        print("Walking");
+      },
+      onStopWalking: () {
+        audioHandler.pause();
+        print("Not walking");
+      },
+    );
+  }
+}
 
 @pragma("vm:entry-point")
 void detectWalking({

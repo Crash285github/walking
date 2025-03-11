@@ -1,20 +1,15 @@
 import 'dart:async';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:walking/model/walking_player.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:walking/model/walking_detector.dart';
 
-WalkingPlayer? _audioHandler;
-
 Future<void> main() async {
-  _audioHandler ??= await AudioService.init<WalkingPlayer>(
-    builder: () => WalkingPlayer(),
-  );
+  FlutterForegroundTask.initCommunicationPort();
 
-  runApp(const MaterialApp(
-    home: WalkingDetection(),
-  ));
+  runApp(
+    const MaterialApp(home: WalkingDetection()),
+  );
 }
 
 class WalkingDetection extends StatefulWidget {
@@ -29,17 +24,28 @@ class _WalkingDetectionState extends State<WalkingDetection> {
   @override
   void initState() {
     super.initState();
+
     detectWalking(
-      onWalking: () {
-        _audioHandler?.play();
-        print("Walking");
-        setState(() => walking = true);
-      },
-      onStopWalking: () {
-        _audioHandler?.pause();
-        print("Not walking");
-        setState(() => walking = false);
-      },
+      onWalking: () => setState(() => walking = true),
+      onStopWalking: () => setState(() => walking = false),
+    );
+
+    FlutterForegroundTask.init(
+      androidNotificationOptions: AndroidNotificationOptions(
+        channelId: "walking",
+        channelName: "walking",
+      ),
+      iosNotificationOptions: const IOSNotificationOptions(),
+      foregroundTaskOptions: ForegroundTaskOptions(
+        eventAction: ForegroundTaskEventAction.nothing(),
+        allowWakeLock: true,
+        autoRunOnBoot: true,
+      ),
+    );
+    FlutterForegroundTask.startService(
+      notificationTitle: "Walking Detection",
+      notificationText: "Detecting your walking",
+      callback: foregroundCallback,
     );
   }
 
