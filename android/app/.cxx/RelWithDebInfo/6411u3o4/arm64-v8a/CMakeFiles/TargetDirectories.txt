@@ -1,0 +1,2 @@
+/Users/adam.horvath/Desktop/Personal/walking/android/app/.cxx/RelWithDebInfo/6411u3o4/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/Users/adam.horvath/Desktop/Personal/walking/android/app/.cxx/RelWithDebInfo/6411u3o4/arm64-v8a/CMakeFiles/edit_cache.dir
