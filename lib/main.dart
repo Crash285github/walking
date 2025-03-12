@@ -1,10 +1,36 @@
 import 'dart:async';
 
+import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:walking/model/walking_detector.dart';
 
-Future<void> main() async {
+Future<void> startService() async {
+  if (await FlutterForegroundTask.isRunningService) {
+    await FlutterForegroundTask.stopService();
+  }
+
+  FlutterForegroundTask.init(
+    androidNotificationOptions: AndroidNotificationOptions(
+      channelId: "walking",
+      channelName: "walking",
+    ),
+    iosNotificationOptions: const IOSNotificationOptions(),
+    foregroundTaskOptions: ForegroundTaskOptions(
+      eventAction: ForegroundTaskEventAction.nothing(),
+      allowWakeLock: true,
+      autoRunOnBoot: false,
+    ),
+  );
+
+  await FlutterForegroundTask.startService(
+    notificationTitle: "Walking Detection",
+    notificationText: "Detecting your walking",
+    callback: foregroundCallback,
+  );
+}
+
+void main() {
   FlutterForegroundTask.initCommunicationPort();
 
   runApp(
@@ -21,14 +47,31 @@ class WalkingDetection extends StatefulWidget {
 
 class _WalkingDetectionState extends State<WalkingDetection> {
   bool walking = false;
+  late final StreamSubscription<AccelerometerEvent> subcription;
+
   @override
   void initState() {
     super.initState();
 
-    detectWalking(
+    startService();
+
+    subcription = detectWalking(
       onWalking: () => setState(() => walking = true),
       onStopWalking: () => setState(() => walking = false),
     );
+  }
+
+  @override
+  void dispose() {
+    subcription.cancel();
+    super.dispose();
+  }
+
+  Future<void> startService() async {
+    if (await FlutterForegroundTask.isRunningService) {
+      print("Service already running");
+      await FlutterForegroundTask.stopService();
+    }
 
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
@@ -39,10 +82,12 @@ class _WalkingDetectionState extends State<WalkingDetection> {
       foregroundTaskOptions: ForegroundTaskOptions(
         eventAction: ForegroundTaskEventAction.nothing(),
         allowWakeLock: true,
-        autoRunOnBoot: true,
+        autoRunOnBoot: false,
       ),
     );
-    FlutterForegroundTask.startService(
+
+    print("Starting service");
+    await FlutterForegroundTask.startService(
       notificationTitle: "Walking Detection",
       notificationText: "Detecting your walking",
       callback: foregroundCallback,
@@ -50,18 +95,16 @@ class _WalkingDetectionState extends State<WalkingDetection> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      home: Scaffold(
-        appBar: AppBar(title: const Text("<><")),
-        body: Center(
-          child: Text(
-            walking ? "Your walking! :D" : "Your not walking >:c",
-            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+  Widget build(BuildContext context) => MaterialApp(
+        theme: ThemeData.dark(),
+        home: Scaffold(
+          appBar: AppBar(title: const Text("<><")),
+          body: Center(
+            child: Text(
+              walking ? "Your walking! :D" : "Your not walking >:c",
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

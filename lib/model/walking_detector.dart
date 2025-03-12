@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:math';
 
@@ -7,27 +9,34 @@ import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:walking/model/walking_player.dart';
 
 @pragma('vm:entry-point')
-void foregroundCallback() {
-  FlutterForegroundTask.setTaskHandler(WalkingTaskHandler());
-}
+void foregroundCallback() => FlutterForegroundTask.setTaskHandler(
+      WalkingTaskHandler(),
+    );
 
 class WalkingTaskHandler extends TaskHandler {
+  StreamSubscription<AccelerometerEvent>? subscription;
+
   @override
   Future<void> onDestroy(DateTime timestamp) async {
     print("onDestroy");
+    subscription?.cancel();
   }
 
   @override
   void onRepeatEvent(DateTime timestamp) {
-    print("onRepeatEvent");
+    // nothing
   }
 
   @override
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
+    print("onStart");
+
     final audioHandler = await AudioService.init<WalkingPlayer>(
       builder: () => WalkingPlayer(),
     );
-    detectWalking(
+
+
+    subscription = detectWalking(
       onWalking: () {
         audioHandler.play();
         print("Walking");
@@ -41,7 +50,7 @@ class WalkingTaskHandler extends TaskHandler {
 }
 
 @pragma("vm:entry-point")
-void detectWalking({
+StreamSubscription<AccelerometerEvent> detectWalking({
   required Function()? onWalking,
   required Function()? onStopWalking,
 }) {
@@ -52,7 +61,7 @@ void detectWalking({
   motionSensors.accelerometerUpdateInterval =
       Duration.microsecondsPerSecond ~/ 60;
 
-  motionSensors.accelerometer.listen((final accel) {
+  return motionSensors.accelerometer.listen((final accel) {
     final mag = sqrt(
       accel.x * accel.x + accel.y * accel.y + accel.z * accel.z,
     );
