@@ -12,6 +12,10 @@ class WalkingPlayer extends BaseAudioHandler {
   @override
   Future<void> pause() async => await _player.pause();
 
+  Future<void> dispose() async => await _player.dispose();
+
+  
+
   Future<void> setAsset(final String asset) async =>
       await _player.setAsset(asset);
 
