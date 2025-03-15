@@ -1,10 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:walking/local_storage.dart';
 
-class WalkingPlayer extends BaseAudioHandler {
-  final _player = AudioPlayer()
-    ..setLoopMode(LoopMode.one)
-    ..setAsset('assets/step.mp3');
+class WalkAudioHandler extends BaseAudioHandler {
+  final _player = AudioPlayer()..setLoopMode(LoopMode.one);
 
   @override
   Future<void> play() async => await _player.play();
@@ -14,12 +13,12 @@ class WalkingPlayer extends BaseAudioHandler {
 
   Future<void> dispose() async => await _player.dispose();
 
-  
-
   Future<void> setAsset(final String asset) async =>
       await _player.setAsset(asset);
 
-  static final WalkingPlayer _instance = WalkingPlayer._internal();
-  factory WalkingPlayer() => _instance;
-  WalkingPlayer._internal();
+  static final WalkAudioHandler _instance = WalkAudioHandler._internal();
+  factory WalkAudioHandler() => _instance;
+  WalkAudioHandler._internal() {
+    _player.setAsset(LocalStorage.selectedAsset);
+  }
 }
