@@ -14,10 +14,16 @@ class WalkingText extends StatefulWidget {
 class _WalkingTextState extends State<WalkingText> {
   bool walking = false;
 
-  late final StreamSubscription<AccelerometerEvent> subcription = detectWalking(
-    onWalking: () => setState(() => walking = true),
-    onStopWalking: () => setState(() => walking = false),
-  );
+  late final StreamSubscription<AccelerometerEvent> subcription;
+
+  @override
+  void initState() {
+    super.initState();
+    subcription = detectWalking(
+      onWalking: () => setState(() => walking = true),
+      onStopWalking: () => setState(() => walking = false),
+    );
+  }
 
   @override
   void dispose() {
