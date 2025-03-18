@@ -1,6 +1,5 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:walking/local_storage.dart';
 
 class WalkAudioHandler extends BaseAudioHandler {
   final _player = AudioPlayer()..setLoopMode(LoopMode.one);
@@ -18,7 +17,5 @@ class WalkAudioHandler extends BaseAudioHandler {
 
   static final WalkAudioHandler _instance = WalkAudioHandler._internal();
   factory WalkAudioHandler() => _instance;
-  WalkAudioHandler._internal() {
-    _player.setAsset(LocalStorage.selectedAsset);
-  }
+  WalkAudioHandler._internal();
 }

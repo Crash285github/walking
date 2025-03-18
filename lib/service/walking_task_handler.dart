@@ -1,12 +1,13 @@
 // ignore_for_file: avoid_print
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:walking/local_storage.dart';
 import 'package:walking/service/walk_audio_handler.dart';
 
 @pragma('vm:entry-point')
@@ -35,6 +36,12 @@ Future<void> startWalkingForegroundService() async {
   );
 }
 
+Future<void> resetWalkingForegroundService() async {
+  await FlutterForegroundTask.stopService();
+  await Future.delayed(const Duration(milliseconds: 100));
+  await startWalkingForegroundService();
+}
+
 class WalkingTaskHandler extends TaskHandler {
   StreamSubscription<AccelerometerEvent>? subscription;
   WalkAudioHandler? audioHandler;
@@ -43,9 +50,6 @@ class WalkingTaskHandler extends TaskHandler {
   Future<void> onDestroy(final DateTime timestamp) async {
     subscription?.cancel();
     audioHandler?.dispose();
-
-    await FlutterForegroundTask.stopService();
-    exit(0);
   }
 
   @override
@@ -58,9 +62,15 @@ class WalkingTaskHandler extends TaskHandler {
     final DateTime timestamp,
     final TaskStarter starter,
   ) async {
-    audioHandler ??= await AudioService.init<WalkAudioHandler>(
-      builder: () => WalkAudioHandler(),
-    );
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    final selected =
+        prefs.getString(LocalStorage.saveKey) ?? LocalStorage.defaultSelected;
+
+    audioHandler = WalkAudioHandler();
+
+    await audioHandler?.setAsset(selected);
+    await AudioService.init<WalkAudioHandler>(builder: () => audioHandler!);
 
     subscription = detectWalking(
       onWalking: () => audioHandler?.play(),
