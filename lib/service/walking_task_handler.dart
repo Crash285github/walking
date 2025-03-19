@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
@@ -36,12 +37,6 @@ Future<void> startWalkingForegroundService() async {
   );
 }
 
-Future<void> resetWalkingForegroundService() async {
-  await FlutterForegroundTask.stopService();
-  await Future.delayed(const Duration(milliseconds: 100));
-  await startWalkingForegroundService();
-}
-
 class WalkingTaskHandler extends TaskHandler {
   StreamSubscription<AccelerometerEvent>? subscription;
   WalkAudioHandler? audioHandler;
@@ -50,6 +45,8 @@ class WalkingTaskHandler extends TaskHandler {
   Future<void> onDestroy(final DateTime timestamp) async {
     subscription?.cancel();
     audioHandler?.dispose();
+
+    exit(0);
   }
 
   @override
@@ -77,6 +74,9 @@ class WalkingTaskHandler extends TaskHandler {
       onStopWalking: () => audioHandler?.pause(),
     );
   }
+
+  @override
+  void onReceiveData(covariant String data) => audioHandler?.setAsset(data);
 
   // Singleton
   static final WalkingTaskHandler _instance = WalkingTaskHandler._internal();
