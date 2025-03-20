@@ -61,12 +61,14 @@ class WalkingTaskHandler extends TaskHandler {
   ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.reload();
-    final selected =
-        prefs.getString(LocalStorage.saveKey) ?? LocalStorage.defaultSelected;
+
+    String? selected = prefs.getString(LocalStorage.saveKey);
+    selected ??= LocalStorage.selected;
+
+    final asset = LocalStorage.sounds[selected]!;
 
     audioHandler = WalkAudioHandler();
-
-    await audioHandler?.setAsset(selected);
+    await audioHandler?.setAsset(asset);
     await AudioService.init<WalkAudioHandler>(builder: () => audioHandler!);
 
     subscription = detectWalking(
