@@ -48,6 +48,16 @@ class _SoundPickerState extends State<SoundPicker> {
 
   @override
   Widget build(BuildContext context) => Card(
+        shape: BeveledRectangleBorder(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16.0),
+            bottomRight: Radius.circular(16.0),
+          ),
+          side: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+            width: 2.0,
+          ),
+        ),
         margin: const EdgeInsets.symmetric(horizontal: 32.0),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -56,7 +66,7 @@ class _SoundPickerState extends State<SoundPicker> {
             padding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Text(
                   "Selected walking sound:",
@@ -69,6 +79,7 @@ class _SoundPickerState extends State<SoundPicker> {
                 const SizedBox(height: 8.0),
                 Text(
                   LocalStorage.selected,
+                  textAlign: TextAlign.end,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 24.0,

@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surfaceDim,
         appBar: AppBar(
           title: const Text(
             "＜＞＜",
@@ -43,13 +44,13 @@ class _HomePageState extends State<HomePage> {
               : const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Spacer(flex: 4),
+                    Spacer(),
                     WalkingText(),
                     Spacer(),
                     SoundPicker(),
-                    Spacer(flex: 6),
+                    Spacer(flex: 3),
                     SpinningFish(),
-                    Spacer(flex: 4),
+                    Spacer(),
                   ],
                 ),
         ),

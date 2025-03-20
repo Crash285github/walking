@@ -6,9 +6,14 @@ Future<T?> showContextMenu<T>({
   required List<PopupMenuEntry<T>> items,
 }) async {
   return await showMenu<T>(
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(
-        Radius.circular(24),
+    shape: const BeveledRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16),
+        bottomRight: Radius.circular(16),
+      ),
+      side: BorderSide(
+        color: Colors.white,
+        width: 2,
       ),
     ),
     clipBehavior: Clip.antiAlias,
