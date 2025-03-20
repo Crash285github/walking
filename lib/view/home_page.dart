@@ -34,11 +34,13 @@ class _HomePageState extends State<HomePage> {
               : const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Spacer(flex: 2),
                     WalkingText(),
-                    SizedBox(height: 32),
+                    Spacer(),
                     SoundPicker(),
-                    SizedBox(height: 32),
+                    Spacer(flex: 4),
                     SpinningFish(),
+                    Spacer(flex: 2),
                   ],
                 ),
         ),

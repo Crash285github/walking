@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:flutter/material.dart';
+import 'package:gif/gif.dart';
 import 'package:walking/service/walking_task_handler.dart';
 
 class SpinningFish extends StatefulWidget {
@@ -11,16 +12,21 @@ class SpinningFish extends StatefulWidget {
   State<SpinningFish> createState() => _SpinningFishState();
 }
 
-class _SpinningFishState extends State<SpinningFish> {
+class _SpinningFishState extends State<SpinningFish>
+    with TickerProviderStateMixin {
   late final StreamSubscription<AccelerometerEvent> subcription;
-  bool enabled = false;
+  late final GifController controller = GifController(vsync: this);
 
   @override
   void initState() {
     super.initState();
     subcription = detectWalking(
-      onWalking: () => setState(() => enabled = true),
-      onStopWalking: () => setState(() => enabled = false),
+      onWalking: () => setState(() {
+        controller.repeat();
+      }),
+      onStopWalking: () => setState(() {
+        controller.stop();
+      }),
     );
   }
 
@@ -32,10 +38,11 @@ class _SpinningFishState extends State<SpinningFish> {
 
   @override
   Widget build(BuildContext context) => Opacity(
-        opacity: enabled ? 1 : 0.5,
-        child: Image.asset(
-          'assets/spinning_fish.gif',
-          height: 200,
+        opacity: controller.isAnimating ? 1 : 0.1,
+        child: Gif(
+          controller: controller,
+          image: const AssetImage("assets/spinning_fish.gif"),
+          fps: 360,
         ),
       );
 }
