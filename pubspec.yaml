@@ -33,3 +33,5 @@ flutter:
   assets:
     - assets/step.mp3
     - assets/loop.mp3
+    - assets/fish.png
+    - assets/spinning_fish.gif

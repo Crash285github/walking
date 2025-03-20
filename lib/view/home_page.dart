@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:walking/service/walking_task_handler.dart';
 import 'package:walking/view/sound_picker.dart';
+import 'package:walking/view/spinning_fish.dart';
 import 'package:walking/view/walking_text.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,6 +37,8 @@ class _HomePageState extends State<HomePage> {
                     WalkingText(),
                     SizedBox(height: 32),
                     SoundPicker(),
+                    SizedBox(height: 32),
+                    SpinningFish(),
                   ],
                 ),
         ),
