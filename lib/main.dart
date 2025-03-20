@@ -23,7 +23,13 @@ class WalkingDetectionApp extends StatefulWidget {
 class _WalkingDetectionAppState extends State<WalkingDetectionApp> {
   @override
   Widget build(BuildContext context) => MaterialApp(
-        theme: ThemeData.dark(),
+        theme: ThemeData.dark().copyWith(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.red,
+            primary: Colors.red,
+            brightness: Brightness.dark,
+          ),
+        ),
         home: const HomePage(),
       );
 }

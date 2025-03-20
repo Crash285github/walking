@@ -11,8 +11,8 @@ class LocalStorage {
 
   static const saveKey = "selectedAudio";
   static const sounds = <String, String>{
-    "Default": "assets/step.mp3",
-    "Loop": "assets/loop.mp3",
+    "step.mp3": "assets/step.mp3",
+    "step_faster.mp3": "assets/loop.mp3",
   };
 
   static int _fishTaps = 0;

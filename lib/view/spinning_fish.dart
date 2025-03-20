@@ -43,28 +43,29 @@ class _SpinningFishState extends State<SpinningFish>
   Widget build(BuildContext context) => Column(
         children: [
           GestureDetector(
-            onTapDown: (details) => setState(() => holding = true),
-            onTapUp: (details) => setState(() {
+            onTapDown: (final details) => setState(() => holding = true),
+            onTapUp: (final details) => setState(() {
               holding = false;
               LocalStorage.fishTaps++;
             }),
             onTapCancel: () => setState(() => holding = false),
-            child: Opacity(
-              opacity: controller.isAnimating ? 1 : 0.3,
-              child: AnimatedScale(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                scale: holding ? 1.1 : 1,
-                child: Gif(
-                  controller: controller,
-                  image: const AssetImage("assets/spinning_fish.gif"),
-                  fps: 360,
-                ),
+            child: AnimatedScale(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              scale: holding ? 1.1 : 1,
+              child: Gif(
+                colorBlendMode: controller.isAnimating
+                    ? BlendMode.dstIn
+                    : BlendMode.srcATop,
+                color: Colors.black.withAlpha(200),
+                controller: controller,
+                image: const AssetImage("assets/spinning_fish.gif"),
+                fps: 360,
               ),
             ),
           ),
           Text(
-            LocalStorage.fishTaps.toString(),
+            "＜${LocalStorage.fishTaps}＞＜",
             style: Theme.of(context).textTheme.headlineSmall,
           ),
         ],
