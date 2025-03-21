@@ -20,7 +20,7 @@ class LocalStorage {
   static const saveKey = "selectedAudio";
   static const sounds = <String, String>{
     "step.mp3": "assets/sounds/step.mp3",
-    "step_loop.mp3": "assets/sounds/step_loop.mp3",
+    "step_quick.mp3": "assets/sounds/step_quick.mp3",
     "CANS WALKING SFX.wav": "assets/sounds/cans.wav",
     "COAT WALKING SFX.wav": "assets/sounds/coat.wav",
     "crab walking.wav": "assets/sounds/crab.wav",
