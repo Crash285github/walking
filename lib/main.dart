@@ -25,10 +25,11 @@ class _WalkingDetectionAppState extends State<WalkingDetectionApp> {
   Widget build(BuildContext context) => MaterialApp(
         theme: ThemeData.dark().copyWith(
           colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.pink[300]!,
+            seedColor: Colors.red,
             primary: Colors.pink[300]!,
             brightness: Brightness.dark,
           ),
+          highlightColor: Colors.purple[300]!.withOpacity(0.5),
         ),
         home: const HomePage(),
       );

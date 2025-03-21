@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:walking/service/walking_task_handler.dart';
+import 'package:walking/view/drawer.dart';
 import 'package:walking/view/sound_picker.dart';
 import 'package:walking/view/spinning_fish.dart';
 import 'package:walking/view/walking_text.dart';
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        drawer: const InfoDrawer(),
         backgroundColor: Theme.of(context).colorScheme.surfaceDim,
         appBar: AppBar(
           title: const Text(

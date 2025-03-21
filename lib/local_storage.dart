@@ -1,12 +1,20 @@
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
   static late final SharedPreferences _prefs;
+  static late final String appVersion;
+
+  static final github =
+      Uri.parse("https://github.com/Crash285github/walking/releases");
 
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     fishTaps = _prefs.getInt("fishTaps") ?? 0;
     selected = _prefs.getString(saveKey) ?? sounds.keys.first;
+
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    appVersion = packageInfo.version;
   }
 
   static const saveKey = "selectedAudio";

@@ -6,13 +6,13 @@ Future<T?> showContextMenu<T>({
   required List<PopupMenuEntry<T>> items,
 }) async =>
     await showMenu<T>(
-      shape: const BeveledRectangleBorder(
-        borderRadius: BorderRadius.only(
+      shape: BeveledRectangleBorder(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           bottomRight: Radius.circular(16),
         ),
         side: BorderSide(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.primary,
           width: 2,
         ),
       ),
