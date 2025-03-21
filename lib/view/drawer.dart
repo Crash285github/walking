@@ -51,6 +51,15 @@ class InfoDrawer extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
+                  "App made by Crash285",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
                   "Walking sounds by Cunks_Feet",
                   style: TextStyle(
                     fontSize: 16.0,
