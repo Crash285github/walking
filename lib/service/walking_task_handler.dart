@@ -90,7 +90,7 @@ class WalkingTaskHandler extends TaskHandler {
 StreamSubscription<AccelerometerEvent> detectWalking({
   required Function? onWalking,
   required Function? onStopWalking,
-  double threshold = 1.5,
+  double threshold = 2.7,
 }) {
   Timer? countdown;
   bool walking = false;

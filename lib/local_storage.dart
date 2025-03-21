@@ -11,8 +11,16 @@ class LocalStorage {
 
   static const saveKey = "selectedAudio";
   static const sounds = <String, String>{
-    "step.mp3": "assets/step.mp3",
-    "step_faster.mp3": "assets/loop.mp3",
+    "step.mp3": "assets/sounds/step.mp3",
+    "step_loop.mp3": "assets/sounds/step_loop.mp3",
+    "CANS WALKING SFX.wav": "assets/sounds/cans.wav",
+    "COAT WALKING SFX.wav": "assets/sounds/coat.wav",
+    "crab walking.wav": "assets/sounds/crab.wav",
+    "hey im walking here.wav": "assets/sounds/im_walking.wav",
+    "SNOW WALKING.wav": "assets/sounds/snow.wav",
+    "LOUD SNOW WALKING.wav": "assets/sounds/loud_snow.wav",
+    "WATER WALKING.wav": "assets/sounds/water.wav",
+    "LOUDER WATER WALKING.wav": "assets/sounds/loud_water.wav",
   };
 
   static int _fishTaps = 0;

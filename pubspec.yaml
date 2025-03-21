@@ -25,14 +25,24 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter_launcher_icons:
-  image_path_android: "assets/logo.png"
+  image_path_android: "assets/icon.jpg"
+  adaptive_icon_background: "#f785ff"
   android: true
 
 flutter:
   uses-material-design: true
 
   assets:
-    - assets/step.mp3
-    - assets/loop.mp3
     - assets/fish.png
     - assets/spinning_fish.gif
+
+    - assets/sounds/cans.wav
+    - assets/sounds/coat.wav
+    - assets/sounds/crab.wav
+    - assets/sounds/im_walking.wav
+    - assets/sounds/loud_snow.wav
+    - assets/sounds/loud_water.wav
+    - assets/sounds/snow.wav
+    - assets/sounds/water.wav
+    - assets/sounds/step.mp3
+    - assets/sounds/step_quick.mp3
