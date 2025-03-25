@@ -7,39 +7,33 @@ import 'dart:math';
 import 'package:audio_service/audio_service.dart';
 import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:light_sensor/light_sensor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walking/local_storage.dart';
 import 'package:walking/service/walk_audio_handler.dart';
 
-@pragma('vm:entry-point')
-void foregroundCallback() => FlutterForegroundTask.setTaskHandler(
-      WalkingTaskHandler(),
-    );
+class WalkingTaskData {
+  final String? asset;
+  final bool? checkLight;
 
-Future<void> startWalkingForegroundService() async {
-  FlutterForegroundTask.init(
-    androidNotificationOptions: AndroidNotificationOptions(
-      channelId: "walking",
-      channelName: "walking",
-    ),
-    iosNotificationOptions: const IOSNotificationOptions(),
-    foregroundTaskOptions: ForegroundTaskOptions(
-      eventAction: ForegroundTaskEventAction.nothing(),
-      allowWakeLock: true,
-      autoRunOnBoot: false,
-    ),
-  );
+  const WalkingTaskData({this.asset, this.checkLight});
 
-  await FlutterForegroundTask.startService(
-    notificationTitle: "Walking Detection",
-    notificationText: "Detecting your walking",
-    callback: foregroundCallback,
-  );
+  Map<String, dynamic> toJson() => {
+        "asset": asset,
+        "checkLight": checkLight,
+      };
+
+  factory WalkingTaskData.fromJson(Map<String, dynamic> json) =>
+      WalkingTaskData(
+        asset: json["asset"] as String?,
+        checkLight: json["checkLight"] as bool?,
+      );
 }
 
 class WalkingTaskHandler extends TaskHandler {
   StreamSubscription<AccelerometerEvent>? subscription;
   WalkAudioHandler? audioHandler;
+  bool checkLight = true;
 
   @override
   Future<void> onDestroy(final DateTime timestamp) async {
@@ -62,7 +56,7 @@ class WalkingTaskHandler extends TaskHandler {
     final prefs = await SharedPreferences.getInstance();
     await prefs.reload();
 
-    String? selected = prefs.getString(LocalStorage.saveKey);
+    String? selected = prefs.getString(LocalStorage.assetKey);
     selected ??= LocalStorage.selected;
 
     final asset = LocalStorage.sounds[selected]!;
@@ -72,13 +66,35 @@ class WalkingTaskHandler extends TaskHandler {
     await AudioService.init<WalkAudioHandler>(builder: () => audioHandler!);
 
     subscription = detectWalking(
-      onWalking: () => audioHandler?.play(),
+      onWalking: () async {
+        if (checkLight) {
+          final light = await LightSensor.luxStream().first;
+          if (light < 1) {
+            audioHandler?.play();
+          }
+          return;
+        }
+        audioHandler?.play();
+      },
       onStopWalking: () => audioHandler?.pause(),
     );
   }
 
   @override
-  void onReceiveData(covariant String data) => audioHandler?.setAsset(data);
+  void onReceiveData(covariant Map<String, dynamic> data) {
+    final parsed = WalkingTaskData.fromJson(data);
+
+    print(parsed.asset);
+    print(parsed.checkLight);
+
+    if (parsed.asset != null) {
+      audioHandler?.setAsset(parsed.asset!);
+    }
+
+    if (parsed.checkLight != null) {
+      checkLight = parsed.checkLight!;
+    }
+  }
 
   // Singleton
   static final WalkingTaskHandler _instance = WalkingTaskHandler._internal();
