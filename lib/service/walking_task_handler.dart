@@ -82,10 +82,9 @@ class WalkingTaskHandler extends TaskHandler {
           audioHandler?.play();
         }
 
+        walkingTimer?.cancel();
         walkingTimer = Timer(const Duration(seconds: 1), () {
           audioHandler?.pause();
-
-          walkingTimer?.cancel();
           walkingTimer = null;
         });
       },
