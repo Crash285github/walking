@@ -36,7 +36,7 @@ class _WalkingTextState extends State<WalkingText> {
         walking ? "Your walking! :D" : "Your not walking >:c",
         style: const TextStyle(
           fontSize: 32,
-          fontWeight: FontWeight.bold,
+          fontFamily: "BabyDoll",
         ),
       );
 }

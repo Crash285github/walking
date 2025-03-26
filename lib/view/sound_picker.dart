@@ -26,6 +26,7 @@ class _SoundPickerState extends State<SoundPicker> {
                 key,
                 style: TextStyle(
                   fontSize: 20.0,
+                  fontFamily: "BabyDoll",
                   fontStyle: key == LocalStorage.selected
                       ? FontStyle.italic
                       : FontStyle.normal,
@@ -66,8 +67,10 @@ class _SoundPickerState extends State<SoundPicker> {
         child: InkWell(
           onTapUp: (final details) => _onTapUp(details.globalPosition),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(
+              vertical: 8.0,
+              horizontal: 16.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -75,7 +78,7 @@ class _SoundPickerState extends State<SoundPicker> {
                   "Selected walking sound:",
                   style: TextStyle(
                     fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: "BabyDoll",
                   ),
                 ),
                 const Divider(),
@@ -90,6 +93,7 @@ class _SoundPickerState extends State<SoundPicker> {
                         color: Theme.of(context).colorScheme.primary,
                         fontSize: 24.0,
                         fontStyle: FontStyle.italic,
+                        fontFamily: "BabyDoll",
                       ),
                     ),
                   ),

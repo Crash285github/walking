@@ -67,8 +67,11 @@ class _SpinningFishState extends State<SpinningFish>
             ),
           ),
           Text(
-            "＜${LocalStorage.fishTaps}＞＜",
-            style: Theme.of(context).textTheme.headlineSmall,
+            "<${LocalStorage.fishTaps}><",
+            style: const TextStyle(
+              fontSize: 32,
+              fontFamily: "BabyDoll",
+            ),
           ),
         ],
       );

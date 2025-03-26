@@ -36,9 +36,9 @@ class InfoDrawer extends StatelessWidget {
                 child: Text(
                   "Details",
                   style: TextStyle(
-                    fontSize: 32.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      fontSize: 32.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "BabyDoll"),
                 ),
               ),
               Padding(
@@ -49,35 +49,55 @@ class InfoDrawer extends StatelessWidget {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 4.0,
+                ),
                 child: Text(
                   "App made by Crash285",
                   style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 20.0,
+                    fontFamily: "BabyDoll",
                   ),
                 ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 64.0),
+                child: Divider(),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   "Walking sounds by Cunks_Feet",
                   style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 20.0,
+                    fontFamily: "BabyDoll",
                   ),
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                padding: EdgeInsets.symmetric(horizontal: 64.0),
+                child: Divider(),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 4.0,
+                ),
                 child: Text(
                   "App icon by that64guy",
                   style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 20.0,
+                    fontFamily: "BabyDoll",
                   ),
                 ),
               ),
               const Spacer(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 4.0,
+                ),
                 child: Container(
                   height: 1.0,
                   color: Colors.white38,
@@ -97,8 +117,7 @@ class InfoDrawer extends StatelessWidget {
                       Text(
                         "App version: ${LocalStorage.appVersion}",
                         style: const TextStyle(
-                          fontSize: 16.0,
-                        ),
+                            fontSize: 16.0, fontFamily: "BabyDoll"),
                       ),
                     ],
                   ),

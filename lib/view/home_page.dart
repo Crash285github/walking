@@ -29,12 +29,9 @@ class _HomePageState extends State<HomePage> {
         drawer: const InfoDrawer(),
         backgroundColor: Theme.of(context).colorScheme.surfaceDim,
         appBar: AppBar(
-          title: const Text(
-            "＜＞＜",
-            style: TextStyle(
-              fontSize: 32.0,
-              fontWeight: FontWeight.bold,
-            ),
+          title: Image.asset(
+            "assets/FISH.png",
+            height: kToolbarHeight / 1.8,
           ),
           centerTitle: true,
           backgroundColor: Colors.transparent,
