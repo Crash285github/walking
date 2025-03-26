@@ -2,44 +2,39 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:light_sensor/light_sensor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walking/local_storage.dart';
+import 'package:walking/service/entry_points.dart';
 import 'package:walking/service/walk_audio_handler.dart';
 
-@pragma('vm:entry-point')
-void foregroundCallback() => FlutterForegroundTask.setTaskHandler(
-      WalkingTaskHandler(),
-    );
+class WalkingTaskData {
+  final String? asset;
+  final bool? checkLight;
 
-Future<void> startWalkingForegroundService() async {
-  FlutterForegroundTask.init(
-    androidNotificationOptions: AndroidNotificationOptions(
-      channelId: "walking",
-      channelName: "walking",
-    ),
-    iosNotificationOptions: const IOSNotificationOptions(),
-    foregroundTaskOptions: ForegroundTaskOptions(
-      eventAction: ForegroundTaskEventAction.nothing(),
-      allowWakeLock: true,
-      autoRunOnBoot: false,
-    ),
-  );
+  const WalkingTaskData({this.asset, this.checkLight});
 
-  await FlutterForegroundTask.startService(
-    notificationTitle: "Walking Detection",
-    notificationText: "Detecting your walking",
-    callback: foregroundCallback,
-  );
+  Map<String, dynamic> toJson() => {
+        "asset": asset,
+        "checkLight": checkLight,
+      };
+
+  factory WalkingTaskData.fromJson(Map<String, dynamic> json) =>
+      WalkingTaskData(
+        asset: json["asset"] as String?,
+        checkLight: json["checkLight"] as bool?,
+      );
 }
 
 class WalkingTaskHandler extends TaskHandler {
   StreamSubscription<AccelerometerEvent>? subscription;
   WalkAudioHandler? audioHandler;
+  bool checkLight = true;
+  Timer? walkingTimer;
 
   @override
   Future<void> onDestroy(final DateTime timestamp) async {
@@ -62,61 +57,58 @@ class WalkingTaskHandler extends TaskHandler {
     final prefs = await SharedPreferences.getInstance();
     await prefs.reload();
 
-    String? selected = prefs.getString(LocalStorage.saveKey);
+    String? selected = prefs.getString(LocalStorage.assetKey);
     selected ??= LocalStorage.selected;
 
     final asset = LocalStorage.sounds[selected]!;
+
+    checkLight =
+        prefs.getBool(LocalStorage.checkLightKey) ?? LocalStorage.checkLight;
 
     audioHandler = WalkAudioHandler();
     await audioHandler?.setAsset(asset);
     await AudioService.init<WalkAudioHandler>(builder: () => audioHandler!);
 
-    subscription = detectWalking(
-      onWalking: () => audioHandler?.play(),
-      onStopWalking: () => audioHandler?.pause(),
+    subscription = detectAcceleration(
+      onAboveThreshold: () async {
+        if (checkLight) {
+          final light = await LightSensor.luxStream().first;
+          if (light > 1) {
+            return;
+          }
+        }
+
+        if (walkingTimer == null) {
+          audioHandler?.play();
+        }
+
+        walkingTimer?.cancel();
+        walkingTimer = Timer(const Duration(seconds: 1), () {
+          audioHandler?.pause();
+          walkingTimer = null;
+        });
+      },
     );
   }
 
   @override
-  void onReceiveData(covariant String data) => audioHandler?.setAsset(data);
+  void onReceiveData(covariant Map<String, dynamic> data) {
+    final parsed = WalkingTaskData.fromJson(data);
+
+    print(parsed.asset);
+    print(parsed.checkLight);
+
+    if (parsed.asset != null) {
+      audioHandler?.setAsset(parsed.asset!);
+    }
+
+    if (parsed.checkLight != null) {
+      checkLight = parsed.checkLight!;
+    }
+  }
 
   // Singleton
   static final WalkingTaskHandler _instance = WalkingTaskHandler._internal();
   factory WalkingTaskHandler() => _instance;
   WalkingTaskHandler._internal();
-}
-
-@pragma("vm:entry-point")
-StreamSubscription<AccelerometerEvent> detectWalking({
-  required Function? onWalking,
-  required Function? onStopWalking,
-  double threshold = 2.7,
-}) {
-  Timer? countdown;
-  bool walking = false;
-
-  motionSensors.accelerometerUpdateInterval =
-      Duration.microsecondsPerSecond ~/ 60;
-
-  return motionSensors.accelerometer.listen((final acceleration) {
-    final x = acceleration.x;
-    final y = acceleration.y;
-    final z = acceleration.z;
-
-    final magnitude = sqrt((x * x) + (y * y) + (z * z));
-    walking = (magnitude - 9.8).abs() > threshold;
-
-    if (walking) {
-      if (countdown == null) {
-        onWalking?.call();
-      }
-
-      countdown?.cancel();
-      countdown = Timer(const Duration(seconds: 1), () {
-        countdown?.cancel();
-        countdown = null;
-        onStopWalking?.call();
-      });
-    }
-  });
 }

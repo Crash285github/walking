@@ -296,6 +296,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  light_sensor:
+    dependency: "direct main"
+    description:
+      name: light_sensor
+      sha256: "84cdab036e87f1e7310bc0f1c30bb3ce661b581c8695fb9d5a4af32c8b0c2c2b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   lints:
     dependency: transitive
     description:
@@ -400,14 +408,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
-  pedometer:
-    dependency: "direct main"
-    description:
-      name: pedometer
-      sha256: "11cfba2de961893d79e65b7773b9462bc53979626b49a86972d63b40217969ee"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.2"
   permission_handler:
     dependency: "direct main"
     description:

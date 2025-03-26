@@ -30,6 +30,7 @@ class _WalkingDetectionAppState extends State<WalkingDetectionApp> {
             brightness: Brightness.dark,
           ),
           highlightColor: Colors.purple[300]!.withOpacity(0.5),
+          splashColor: Colors.purple[300]!.withOpacity(0.5),
         ),
         home: const HomePage(),
       );

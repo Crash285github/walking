@@ -4,7 +4,7 @@ import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:flutter/material.dart';
 import 'package:gif/gif.dart';
 import 'package:walking/local_storage.dart';
-import 'package:walking/service/walking_task_handler.dart';
+import 'package:walking/service/entry_points.dart';
 
 class SpinningFish extends StatefulWidget {
   const SpinningFish({super.key});
@@ -46,7 +46,9 @@ class _SpinningFishState extends State<SpinningFish>
             onTapDown: (final details) => setState(() => holding = true),
             onTapUp: (final details) => setState(() {
               holding = false;
-              LocalStorage.fishTaps++;
+              if (controller.isAnimating) {
+                LocalStorage.fishTaps++;
+              }
             }),
             onTapCancel: () => setState(() => holding = false),
             child: AnimatedScale(
@@ -65,8 +67,11 @@ class _SpinningFishState extends State<SpinningFish>
             ),
           ),
           Text(
-            "＜${LocalStorage.fishTaps}＞＜",
-            style: Theme.of(context).textTheme.headlineSmall,
+            "<${LocalStorage.fishTaps}><",
+            style: const TextStyle(
+              fontSize: 32,
+              fontFamily: "BabyDoll",
+            ),
           ),
         ],
       );

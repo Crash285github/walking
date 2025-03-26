@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:flutter/material.dart';
-import 'package:walking/service/walking_task_handler.dart';
+import 'package:walking/service/entry_points.dart';
 
 class WalkingText extends StatefulWidget {
   const WalkingText({super.key});
@@ -36,7 +36,7 @@ class _WalkingTextState extends State<WalkingText> {
         walking ? "Your walking! :D" : "Your not walking >:c",
         style: const TextStyle(
           fontSize: 32,
-          fontWeight: FontWeight.bold,
+          fontFamily: "BabyDoll",
         ),
       );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:walking/service/walking_task_handler.dart';
+import 'package:walking/service/entry_points.dart';
 import 'package:walking/view/drawer.dart';
+import 'package:walking/view/light_switch.dart';
 import 'package:walking/view/sound_picker.dart';
 import 'package:walking/view/spinning_fish.dart';
 import 'package:walking/view/walking_text.dart';
@@ -28,12 +29,9 @@ class _HomePageState extends State<HomePage> {
         drawer: const InfoDrawer(),
         backgroundColor: Theme.of(context).colorScheme.surfaceDim,
         appBar: AppBar(
-          title: const Text(
-            "＜＞＜",
-            style: TextStyle(
-              fontSize: 32.0,
-              fontWeight: FontWeight.bold,
-            ),
+          title: Image.asset(
+            "assets/FISH.png",
+            height: kToolbarHeight / 1.8,
           ),
           centerTitle: true,
           backgroundColor: Colors.transparent,
@@ -50,6 +48,7 @@ class _HomePageState extends State<HomePage> {
                     WalkingText(),
                     Spacer(),
                     SoundPicker(),
+                    LightSwitch(),
                     Spacer(flex: 3),
                     SpinningFish(),
                     Spacer(),
