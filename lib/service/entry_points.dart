@@ -33,16 +33,12 @@ Future<void> startWalkingForegroundService() async {
   );
 }
 
-// MARK: detect
+// MARK: detectAccel
 @pragma("vm:entry-point")
-StreamSubscription<AccelerometerEvent> detectWalking({
-  required Function? onWalking,
-  required Function? onStopWalking,
+StreamSubscription<AccelerometerEvent> detectAcceleration({
+  required Function? onAboveThreshold,
   double threshold = 2.7,
 }) {
-  Timer? countdown;
-  bool walking = false;
-
   motionSensors.accelerometerUpdateInterval =
       Duration.microsecondsPerSecond ~/ 60;
 
@@ -52,19 +48,36 @@ StreamSubscription<AccelerometerEvent> detectWalking({
     final z = acceleration.z;
 
     final magnitude = sqrt((x * x) + (y * y) + (z * z));
-    walking = (magnitude - 9.8).abs() > threshold;
+    final isAboveThreshold = (magnitude - 9.8).abs() > threshold;
+    if (isAboveThreshold) {
+      onAboveThreshold?.call();
+    }
+  });
+}
 
-    if (walking) {
+// MARK: detectWalk
+@pragma("vm:entry-point")
+StreamSubscription<AccelerometerEvent> detectWalking({
+  required Function? onWalking,
+  required Function? onStopWalking,
+  double threshold = 2.7,
+}) {
+  Timer? countdown;
+
+  return detectAcceleration(
+    onAboveThreshold: () {
       if (countdown == null) {
         onWalking?.call();
       }
 
       countdown?.cancel();
       countdown = Timer(const Duration(seconds: 1), () {
+        onStopWalking?.call();
+
         countdown?.cancel();
         countdown = null;
-        onStopWalking?.call();
       });
-    }
-  });
+    },
+    threshold: threshold,
+  );
 }

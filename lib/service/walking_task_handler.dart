@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:light_sensor/light_sensor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walking/local_storage.dart';
+import 'package:walking/service/entry_points.dart';
 import 'package:walking/service/walk_audio_handler.dart';
 
 class WalkingTaskData {
@@ -34,6 +34,7 @@ class WalkingTaskHandler extends TaskHandler {
   StreamSubscription<AccelerometerEvent>? subscription;
   WalkAudioHandler? audioHandler;
   bool checkLight = true;
+  Timer? walkingTimer;
 
   @override
   Future<void> onDestroy(final DateTime timestamp) async {
@@ -61,22 +62,33 @@ class WalkingTaskHandler extends TaskHandler {
 
     final asset = LocalStorage.sounds[selected]!;
 
+    checkLight =
+        prefs.getBool(LocalStorage.checkLightKey) ?? LocalStorage.checkLight;
+
     audioHandler = WalkAudioHandler();
     await audioHandler?.setAsset(asset);
     await AudioService.init<WalkAudioHandler>(builder: () => audioHandler!);
 
-    subscription = detectWalking(
-      onWalking: () async {
+    subscription = detectAcceleration(
+      onAboveThreshold: () async {
         if (checkLight) {
           final light = await LightSensor.luxStream().first;
-          if (light < 1) {
-            audioHandler?.play();
+          if (light > 1) {
+            return;
           }
-          return;
         }
-        audioHandler?.play();
+
+        if (walkingTimer == null) {
+          audioHandler?.play();
+        }
+
+        walkingTimer = Timer(const Duration(seconds: 1), () {
+          audioHandler?.pause();
+
+          walkingTimer?.cancel();
+          walkingTimer = null;
+        });
       },
-      onStopWalking: () => audioHandler?.pause(),
     );
   }
 
@@ -100,39 +112,4 @@ class WalkingTaskHandler extends TaskHandler {
   static final WalkingTaskHandler _instance = WalkingTaskHandler._internal();
   factory WalkingTaskHandler() => _instance;
   WalkingTaskHandler._internal();
-}
-
-@pragma("vm:entry-point")
-StreamSubscription<AccelerometerEvent> detectWalking({
-  required Function? onWalking,
-  required Function? onStopWalking,
-  double threshold = 2.7,
-}) {
-  Timer? countdown;
-  bool walking = false;
-
-  motionSensors.accelerometerUpdateInterval =
-      Duration.microsecondsPerSecond ~/ 60;
-
-  return motionSensors.accelerometer.listen((final acceleration) {
-    final x = acceleration.x;
-    final y = acceleration.y;
-    final z = acceleration.z;
-
-    final magnitude = sqrt((x * x) + (y * y) + (z * z));
-    walking = (magnitude - 9.8).abs() > threshold;
-
-    if (walking) {
-      if (countdown == null) {
-        onWalking?.call();
-      }
-
-      countdown?.cancel();
-      countdown = Timer(const Duration(seconds: 1), () {
-        countdown?.cancel();
-        countdown = null;
-        onStopWalking?.call();
-      });
-    }
-  });
 }
