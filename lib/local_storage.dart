@@ -12,7 +12,7 @@ class LocalStorage {
     _prefs = await SharedPreferences.getInstance();
     fishTaps = _prefs.getInt(fishTapsKey) ?? 0;
     selected = _prefs.getString(assetKey) ?? sounds.keys.first;
-    checkLight = _prefs.getBool(checkLightKey) ?? true;
+    onlyPocket = _prefs.getBool(onlyPocketKey) ?? true;
 
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     appVersion = packageInfo.version;
@@ -52,11 +52,11 @@ class LocalStorage {
   }
 
   // MARK: Light
-  static const checkLightKey = "checkLight";
+  static const onlyPocketKey = "checkLight";
   static bool _checkLight = true;
-  static bool get checkLight => _checkLight;
-  static set checkLight(final bool value) {
+  static bool get onlyPocket => _checkLight;
+  static set onlyPocket(final bool value) {
     _checkLight = value;
-    _prefs.setBool(checkLightKey, value);
+    _prefs.setBool(onlyPocketKey, value);
   }
 }

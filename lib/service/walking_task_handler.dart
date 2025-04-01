@@ -33,13 +33,13 @@ class WalkingTaskData {
 class WalkingTaskHandler extends TaskHandler {
   StreamSubscription<AccelerometerEvent>? subscription;
   WalkAudioHandler? audioHandler;
-  bool checkLight = true;
+  bool onlyPocket = true;
   Timer? walkingTimer;
 
   @override
   Future<void> onDestroy(final DateTime timestamp) async {
-    subscription?.cancel();
-    audioHandler?.dispose();
+    await subscription?.cancel();
+    await audioHandler?.dispose();
 
     exit(0);
   }
@@ -62,8 +62,8 @@ class WalkingTaskHandler extends TaskHandler {
 
     final asset = LocalStorage.sounds[selected]!;
 
-    checkLight =
-        prefs.getBool(LocalStorage.checkLightKey) ?? LocalStorage.checkLight;
+    onlyPocket =
+        prefs.getBool(LocalStorage.onlyPocketKey) ?? LocalStorage.onlyPocket;
 
     audioHandler = WalkAudioHandler();
     await audioHandler?.setAsset(asset);
@@ -71,20 +71,24 @@ class WalkingTaskHandler extends TaskHandler {
 
     subscription = detectAcceleration(
       onAboveThreshold: () async {
-        if (checkLight) {
+        if (onlyPocket) {
           final light = await LightSensor.luxStream().first;
           if (light > 1) {
+            await audioHandler?.pause();
+
+            walkingTimer?.cancel();
+            walkingTimer = null;
             return;
           }
         }
 
         if (walkingTimer == null) {
-          audioHandler?.play();
+          await audioHandler?.play();
         }
 
         walkingTimer?.cancel();
-        walkingTimer = Timer(const Duration(seconds: 1), () {
-          audioHandler?.pause();
+        walkingTimer = Timer(const Duration(seconds: 1), () async {
+          await audioHandler?.pause();
           walkingTimer = null;
         });
       },
@@ -92,18 +96,15 @@ class WalkingTaskHandler extends TaskHandler {
   }
 
   @override
-  void onReceiveData(covariant Map<String, dynamic> data) {
+  Future<void> onReceiveData(covariant Map<String, dynamic> data) async {
     final parsed = WalkingTaskData.fromJson(data);
 
-    print(parsed.asset);
-    print(parsed.checkLight);
-
     if (parsed.asset != null) {
-      audioHandler?.setAsset(parsed.asset!);
+      await audioHandler?.setAsset(parsed.asset!);
     }
 
     if (parsed.checkLight != null) {
-      checkLight = parsed.checkLight!;
+      onlyPocket = parsed.checkLight!;
     }
   }
 

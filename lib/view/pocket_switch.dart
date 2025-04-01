@@ -3,21 +3,21 @@ import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:walking/local_storage.dart';
 import 'package:walking/service/walking_task_handler.dart';
 
-class LightSwitch extends StatefulWidget {
-  const LightSwitch({super.key});
+class PocketSwitch extends StatefulWidget {
+  const PocketSwitch({super.key});
 
   @override
-  State<LightSwitch> createState() => _LightSwitchState();
+  State<PocketSwitch> createState() => _PocketSwitchState();
 }
 
-class _LightSwitchState extends State<LightSwitch> {
+class _PocketSwitchState extends State<PocketSwitch> {
   void _onTap(final bool value) {
-    setState(
-      () => LocalStorage.checkLight = value,
-    );
-
     FlutterForegroundTask.sendDataToTask(
       WalkingTaskData(checkLight: value).toJson(),
+    );
+
+    setState(
+      () => LocalStorage.onlyPocket = value,
     );
   }
 
@@ -38,7 +38,7 @@ class _LightSwitchState extends State<LightSwitch> {
           margin: const EdgeInsets.symmetric(horizontal: 32.0),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
-            onTap: () => _onTap(!LocalStorage.checkLight),
+            onTap: () => _onTap(!LocalStorage.onlyPocket),
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 8.0,
@@ -54,7 +54,7 @@ class _LightSwitchState extends State<LightSwitch> {
                       fontFamily: "BabyDoll",
                     ),
                   ),
-                  Switch(value: LocalStorage.checkLight, onChanged: _onTap),
+                  Switch(value: LocalStorage.onlyPocket, onChanged: _onTap),
                 ],
               ),
             ),

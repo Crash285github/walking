@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:walking/service/entry_points.dart';
 import 'package:walking/view/drawer.dart';
-import 'package:walking/view/light_switch.dart';
+import 'package:walking/view/pocket_switch.dart';
 import 'package:walking/view/sound_picker.dart';
 import 'package:walking/view/spinning_fish.dart';
 import 'package:walking/view/walking_text.dart';
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                     WalkingText(),
                     Spacer(),
                     SoundPicker(),
-                    LightSwitch(),
+                    PocketSwitch(),
                     Spacer(flex: 3),
                     SpinningFish(),
                     Spacer(),
