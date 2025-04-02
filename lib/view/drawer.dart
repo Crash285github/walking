@@ -41,13 +41,8 @@ class InfoDrawer extends StatelessWidget {
                       fontFamily: "BabyDoll"),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(
-                  height: 1.0,
-                  color: Colors.white38,
-                ),
-              ),
+              const Divider(thickness: 4.0),
+              const SizedBox(height: 16.0),
               const Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 8.0,
@@ -61,10 +56,7 @@ class InfoDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 64.0),
-                child: Divider(),
-              ),
+              const Divider(),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
@@ -75,10 +67,7 @@ class InfoDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 64.0),
-                child: Divider(),
-              ),
+              const Divider(),
               const Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 8.0,

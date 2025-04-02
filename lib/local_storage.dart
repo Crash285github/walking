@@ -11,7 +11,7 @@ class LocalStorage {
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     fishTaps = _prefs.getInt(fishTapsKey) ?? 0;
-    selected = _prefs.getString(assetKey) ?? sounds.keys.first;
+    selected = _prefs.getString(assetKey) ?? sounds.keys.first!;
     onlyPocket = _prefs.getBool(onlyPocketKey) ?? true;
 
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -20,20 +20,21 @@ class LocalStorage {
 
   // MARK: Asset
   static const assetKey = "selectedAudio";
-  static const sounds = <String, String>{
+  static const sounds = <String?, String?>{
     "step.mp3": "assets/sounds/step.mp3",
     "step_quick.mp3": "assets/sounds/step_quick.mp3",
     "CANS WALKING SFX.wav": "assets/sounds/cans.wav",
     "COAT WALKING SFX.wav": "assets/sounds/coat.wav",
-    "crab walking.wav": "assets/sounds/crab.wav",
     "hey im walking here.wav": "assets/sounds/im_walking.wav",
+    "crab walking.wav": "assets/sounds/crab.wav",
+    null: null, // divider
     "SNOW WALKING.wav": "assets/sounds/snow.wav",
     "LOUD SNOW WALKING.wav": "assets/sounds/loud_snow.wav",
     "WATER WALKING.wav": "assets/sounds/water.wav",
     "LOUDER WATER WALKING.wav": "assets/sounds/loud_water.wav",
   };
 
-  static String _selected = sounds.keys.first;
+  static String _selected = sounds.keys.first!;
   static String get selected => _selected;
   static set selected(final String value) {
     _selected = value;

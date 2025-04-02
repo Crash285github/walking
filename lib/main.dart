@@ -31,6 +31,13 @@ class _WalkingDetectionAppState extends State<WalkingDetectionApp> {
           ),
           highlightColor: Colors.purple[300]!.withOpacity(0.5),
           splashColor: Colors.purple[300]!.withOpacity(0.5),
+          dividerTheme: DividerThemeData(
+            color: Colors.purple[300]!,
+            thickness: 2.0,
+            space: 2.0,
+            indent: 32.0,
+            endIndent: 32.0,
+          ),
         ),
         home: const HomePage(),
       );

@@ -18,25 +18,31 @@ class _SoundPickerState extends State<SoundPicker> {
       offset: offset,
       items: [
         ...LocalStorage.sounds.keys.map(
-          (final key) => PopupMenuItem<String?>(
-            value: key,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                key,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily: "BabyDoll",
-                  fontStyle: key == LocalStorage.selected
-                      ? FontStyle.italic
-                      : FontStyle.normal,
-                  color: key == LocalStorage.selected
-                      ? Theme.of(context).colorScheme.primary
-                      : null,
+          (final key) {
+            if (key == null) {
+              return const PopupMenuDivider();
+            }
+
+            return PopupMenuItem<String?>(
+              value: key,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  key,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontFamily: "BabyDoll",
+                    fontStyle: key == LocalStorage.selected
+                        ? FontStyle.italic
+                        : FontStyle.normal,
+                    color: key == LocalStorage.selected
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );

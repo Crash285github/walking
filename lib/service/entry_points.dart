@@ -5,6 +5,8 @@ import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:walking/service/walking_task_handler.dart';
 
+const double kWalkingThreshold = 2.5;
+
 // MARK: fbCallback
 @pragma('vm:entry-point')
 void foregroundCallback() => FlutterForegroundTask.setTaskHandler(
@@ -37,7 +39,7 @@ Future<void> startWalkingForegroundService() async {
 @pragma("vm:entry-point")
 StreamSubscription<AccelerometerEvent> detectAcceleration({
   required Function? onAboveThreshold,
-  double threshold = 2.7,
+  double threshold = kWalkingThreshold,
 }) {
   motionSensors.accelerometerUpdateInterval =
       Duration.microsecondsPerSecond ~/ 60;
@@ -60,7 +62,7 @@ StreamSubscription<AccelerometerEvent> detectAcceleration({
 StreamSubscription<AccelerometerEvent> detectWalking({
   required Function? onWalking,
   required Function? onStopWalking,
-  double threshold = 2.7,
+  double threshold = kWalkingThreshold,
 }) {
   Timer? countdown;
 
